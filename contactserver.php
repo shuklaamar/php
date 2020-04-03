@@ -15,40 +15,32 @@
 	// REGISTER USER
 	if (isset($_POST['reg_user'])) {
 ///******************* 
-require_once "vendor/autoload.php";
 
-//PHPMailer Object
+require 'PHPMailerAutoload.php';
+
 $mail = new PHPMailer;
+$mail->isSMTP();                                      // Set mailer to use SMTP
+$mail->Host = 'smtp1.example.com';  					// Specify main and backup SMTP servers
+$mail->SMTPAuth = true;                               // Enable SMTP authentication
+$mail->Username = 'user@example.com';                 // SMTP username
+$mail->Password = 'secret';                           // SMTP password
+$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+$mail->Port = 587;                                    // TCP port to connect to
 
-//From email address and name
-$mail->From = "from@gmail.com";
-$mail->FromName = "Full Name";
+$mail->setFrom('from@example.com', 'Mailer');
+$mail->addAddress($_POST['email'], 'Joe User');     // Add a recipient
+$mail->addReplyTo('amar636@.com', 'Information');
+$mail->isHTML(true);                                  // Set email format to HTML
 
-//To address and name
-$mail->addAddress($_POST['email'], "Recepient Name");
-$mail->addAddress("recepient1@example.com"); //Recipient name is optional
+$mail->Subject = 'Here is the subject';
+$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
-//Address to which recipient will reply
-$mail->addReplyTo("reply@yourdomain.com", "Reply");
-
-//CC and BCC
-$mail->addCC("cc@example.com");
-$mail->addBCC("bcc@example.com");
-
-//Send HTML or Plain Text email
-$mail->isHTML(true);
-
-$mail->Subject = "Subject Text";
-$mail->Body = "<i>Mail body in HTML</i>";
-$mail->AltBody = "This is the plain text version of the email content";
-
-if(!$mail->send()) 
-{
-    echo "Mailer Error: " . $mail->ErrorInfo;
-} 
-else 
-{
-    echo "Message has been sent successfully";
+if(!$mail->send()) {
+    echo 'Message could not be sent.';
+    echo 'Mailer Error: ' . $mail->ErrorInfo;
+} else {
+    echo 'Message has been sent';
 }
 
 
